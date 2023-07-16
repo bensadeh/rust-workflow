@@ -32,12 +32,12 @@ jobs:
             exit 1
           fi
 
-#      - name: Publish to crates.io
-#        env:
-#          CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
-#        run: |
-#          cargo login $CARGO_REGISTRY_TOKEN
-#          cargo publish
+      - name: Publish to crates.io
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
+        run: |
+          cargo login $CARGO_REGISTRY_TOKEN
+          cargo publish
 
       - name: Get release notes
         id: release_notes
@@ -82,8 +82,8 @@ jobs:
           cargo build
           
           # Add new entry to CHANGELOG.md
-          NEW_CHANGELOG_ENTRY="## $BUMPED_VERSION - \n- Start of new work\n"
-          sed -i "s/^## $VERSION -/&\n$NEW_CHANGELOG_ENTRY/" CHANGELOG.md
+          NEW_CHANGELOG_ENTRY=$(printf "## %s - \n- Start of new work\n" "$BUMPED_VERSION")
+          sed -i "/^## $VERSION -/a $NEW_CHANGELOG_ENTRY" CHANGELOG.md
           
           # Commit and push changes
           git config user.name '${{ github.actor }}'
