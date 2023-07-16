@@ -16,6 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
+          token: ${{secrets.GH_PAT}}
           fetch-depth: 0
 
 #      - name: Build and Test
@@ -72,11 +73,11 @@ jobs:
           BUMPED_VERSION_LINE=$(echo $VERSION | sed "s/\.$MINOR_VERSION\./\.$BUMPED_MINOR_VERSION\./")
           sed -i "s/$VERSION/$BUMPED_VERSION_LINE/" ./Cargo.toml
           
+          # Update cargo.lock
+          cargo build
+          
           # Add new entry to CHANGELOG.md
           echo -e "\n## [WIP]\n- Start of new work\n" >> CHANGELOG.md
-          
-          # Configure Git to use PAT for authentication
-          git config --global credential.helper store
           
           # Commit and push changes
           git config user.name '${{ github.actor }}'
