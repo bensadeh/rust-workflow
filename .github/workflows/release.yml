@@ -43,7 +43,7 @@ jobs:
         id: release_notes
         run: |
           TAG_NAME=${{ github.ref_name }}
-          RELEASE_NOTES=$(awk -v tag=$TAG_NAME '/## /{p=0} /^## '$tag'/{p=1} p' CHANGELOG.md)
+          RELEASE_NOTES=$(awk -v tag=$TAG_NAME '/^## / && !/'$tag'/{p=0} /^## '$tag'/{p=1} p' CHANGELOG.md)
           echo "::set-output name=notes::$RELEASE_NOTES"
 
       - name: Create GitHub Release
