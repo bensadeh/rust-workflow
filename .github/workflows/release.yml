@@ -5,6 +5,9 @@ on:
     tags:
       - '*'
 
+env:
+  CARGO_TERM_COLOR: always
+
 jobs:
   release:
     name: Release
@@ -15,15 +18,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Rust
+      - name: Build and Test
         run: |
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-
-#      - name: Build and Test
-#        run: |
-#          cargo build --verbose
-#          cargo test --verbose
+          cargo build --verbose
+          cargo test --verbose
 #
 #      - name: Check Cargo.lock
 #        run: |
