@@ -42,10 +42,9 @@ jobs:
       - name: Get release notes
         id: release_notes
         run: |
-          export TAG_NAME=${{ github.ref_name }}
-          echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
-          awk -v tag=$TAG_NAME '/## \[/{p=0} /## \['$tag'\]/{p=1} p' CHANGELOG.md >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          TAG_NAME=${{ github.ref_name }}
+          RELEASE_NOTES=$(awk -v tag=$TAG_NAME '/## \[/{p=0} /## \['$tag'\]/{p=1} p' CHANGELOG.md)
+          echo "RELEASE_NOTES=$RELEASE_NOTES" >> $GITHUB_ENV
 
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
@@ -67,11 +66,12 @@ jobs:
           git checkout "$BRANCH_NAME"
           
           # Bump minor version in Cargo.toml
-          VERSION=$(grep "^version" ./Cargo.toml | head -1)
-          MINOR_VERSION=$(echo $VERSION | awk -F'.' '{print $2}' | tr -d '"' | tr -d " ")
+          VERSION_LINE=$(grep "^version" ./Cargo.toml | head -1)
+          VERSION=$(echo $VERSION_LINE | grep -oP '\d+\.\d+\.\d+')
+          MINOR_VERSION=$(echo $VERSION | awk -F'.' '{print $2}')
           BUMPED_MINOR_VERSION=$((MINOR_VERSION + 1))
-          BUMPED_VERSION_LINE=$(echo $VERSION | sed "s/\.$MINOR_VERSION\./\.$BUMPED_MINOR_VERSION\./")
-          sed -i "s/$VERSION/$BUMPED_VERSION_LINE/" ./Cargo.toml
+          BUMPED_VERSION_LINE=$(echo $VERSION_LINE | sed "s/\.$MINOR_VERSION\./\.$BUMPED_MINOR_VERSION\./")
+          sed -i "s/$VERSION_LINE/$BUMPED_VERSION_LINE/" ./Cargo.toml
           
           # Update cargo.lock
           cargo build
@@ -86,5 +86,6 @@ jobs:
           git add .
           git commit -m "Bump version and update CHANGELOG"
           git push
+
 
 
