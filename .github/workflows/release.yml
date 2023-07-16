@@ -19,42 +19,42 @@ jobs:
           token: ${{secrets.GH_PAT}}
           fetch-depth: 0
 
-#      - name: Build and Test
-#        run: |
-#          cargo build --verbose
-#          cargo test --verbose
-#
-#      - name: Check Cargo.lock
-#        run: |
-#          git diff --exit-code -- Cargo.lock
-#          if [ $? -ne 0 ]; then
-#            echo "Cargo.lock was modified. Please commit the changes."
-#            exit 1
-#          fi
-#
+      - name: Build and Test
+        run: |
+          cargo build --verbose
+          cargo test --verbose
+
+      - name: Check Cargo.lock
+        run: |
+          git diff --exit-code -- Cargo.lock
+          if [ $? -ne 0 ]; then
+            echo "Cargo.lock was modified. Please commit the changes."
+            exit 1
+          fi
+
 #      - name: Publish to crates.io
 #        env:
 #          CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
 #        run: |
 #          cargo login $CARGO_REGISTRY_TOKEN
 #          cargo publish
-#
-#      - name: Get release notes
-#        id: release_notes
-#        run: |
-#          export TAG_NAME=${{ github.ref_name }}
-#          echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
-#          awk -v tag=$TAG_NAME '/## \[/{p=0} /## \['$tag'\]/{p=1} p' CHANGELOG.md >> $GITHUB_ENV
-#          echo "EOF" >> $GITHUB_ENV
-#
-#      - name: Create GitHub Release
-#        uses: ncipollo/release-action@v1
-#        with:
-#          artifacts: "none"
-#          token: ${{ secrets.GH_PAT }}
-#          tag: ${{ github.ref }}
-#          name: ${{ github.ref_name }}
-#          body: ${{ env.RELEASE_NOTES }}
+
+      - name: Get release notes
+        id: release_notes
+        run: |
+          export TAG_NAME=${{ github.ref_name }}
+          echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
+          awk -v tag=$TAG_NAME '/## \[/{p=0} /## \['$tag'\]/{p=1} p' CHANGELOG.md >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "none"
+          token: ${{ secrets.GH_PAT }}
+          tag: ${{ github.ref }}
+          name: ${{ github.ref_name }}
+          body: ${{ env.RELEASE_NOTES }}
 
       - name: Bump minor version and update CHANGELOG
         run: |
