@@ -74,10 +74,13 @@ jobs:
           
           # Add new entry to CHANGELOG.md
           echo -e "\n## [WIP]\n- Start of new work\n" >> CHANGELOG.md
+          
+          # Configure Git to use PAT for authentication
+          git config --global url."https://x-access-token:${{ secrets.GH_PAT }}@github.com/".insteadOf "https://github.com/"
+          
           # Commit and push changes
           git config --global user.name '${{ github.actor }}'
           git config --global user.email '${{ github.actor }}@users.noreply.github.com'
           git add .
           git commit -m "Bump version and update CHANGELOG"
-          git push https://${{ secrets.GH_PAT }}:x-oauth-basic@github.com/${{ github.repository }}.git
-
+          git push
