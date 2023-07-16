@@ -58,8 +58,12 @@ jobs:
       - name: Bump minor version and update CHANGELOG
         run: |
           # Bump minor version in Cargo.toml
-          cargo install cargo-edit
-          cargo bump minor
+          VERSION=$(grep "^version" ./Cargo.toml | head -1)
+          MINOR_VERSION=$(echo $VERSION | awk -F'.' '{print $2}' | tr -d '"' | tr -d " ")
+          BUMPED_MINOR_VERSION=$((MINOR_VERSION + 1))
+          BUMPED_VERSION_LINE=$(echo $VERSION | sed "s/\.$MINOR_VERSION\./\.$BUMPED_MINOR_VERSION\./")
+          sed -i "s/$VERSION/$BUMPED_VERSION_LINE/" ./Cargo.toml
+    
           # Add new entry to CHANGELOG.md
           echo -e "\n## [WIP]\n- Start of new work\n" >> CHANGELOG.md
           # Commit and push changes
