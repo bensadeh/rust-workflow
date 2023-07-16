@@ -77,6 +77,7 @@ jobs:
           BUMPED_MINOR_VERSION=$((MINOR_VERSION + 1))
           BUMPED_VERSION_LINE=$(echo $VERSION | sed "s/\.$MINOR_VERSION\./\.$BUMPED_MINOR_VERSION\./")
           sed -i "s/$VERSION/$BUMPED_VERSION_LINE/" ./Cargo.toml
+          cargo build
           
           # Add new entry to CHANGELOG.md
           echo -e "\n## [WIP]\n- Start of new work\n" >> CHANGELOG.md
