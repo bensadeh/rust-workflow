@@ -57,13 +57,7 @@ jobs:
 
       - name: Bump minor version and update CHANGELOG
         run: |
-          # Find the commit SHA
-          COMMIT_SHA=$(echo $GITHUB_SHA)
-          
-          # Get the branch associated with the commit SHA
-          BRANCH_NAME=$(curl --silent --show-error --header 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/commits/${COMMIT_SHA}/branches-where-head" \
-            | jq -r '.branches[0].name')
+          BRANCH_NAME="main"  # Set this to your default branch name or the branch you always create tags on.
           
           # Fetch the branch
           git fetch origin $BRANCH_NAME
@@ -77,7 +71,6 @@ jobs:
           BUMPED_MINOR_VERSION=$((MINOR_VERSION + 1))
           BUMPED_VERSION_LINE=$(echo $VERSION | sed "s/\.$MINOR_VERSION\./\.$BUMPED_MINOR_VERSION\./")
           sed -i "s/$VERSION/$BUMPED_VERSION_LINE/" ./Cargo.toml
-          cargo build
           
           # Add new entry to CHANGELOG.md
           echo -e "\n## [WIP]\n- Start of new work\n" >> CHANGELOG.md
@@ -87,3 +80,4 @@ jobs:
           git add .
           git commit -m "Bump version and update CHANGELOG"
           git push
+
