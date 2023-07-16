@@ -1,3 +1,7 @@
+## 0.30.0
+
+- Start of new work
+
 # Changelog
 
 ## 0.29.0
