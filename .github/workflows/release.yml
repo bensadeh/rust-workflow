@@ -22,14 +22,14 @@ jobs:
         run: |
           cargo build --verbose
           cargo test --verbose
-#
-#      - name: Check Cargo.lock
-#        run: |
-#          git diff --exit-code -- Cargo.lock
-#          if [ $? -ne 0 ]; then
-#            echo "Cargo.lock was modified. Please commit the changes."
-#            exit 1
-#          fi
+
+      - name: Check Cargo.lock
+        run: |
+          git diff --exit-code -- Cargo.lock
+          if [ $? -ne 0 ]; then
+            echo "Cargo.lock was modified. Please commit the changes."
+            exit 1
+          fi
 #
 #      - name: Publish to crates.io
 #        env:
