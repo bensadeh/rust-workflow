@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.13.0
+
+- abc
+- def
+ 
 ## 0.10.0
 
 - abc
@@ -9,10 +14,3 @@
 
 - abc
 - def
-## [WIP]
-- Start of new work
-
-
-## [WIP]
-- Start of new work
-

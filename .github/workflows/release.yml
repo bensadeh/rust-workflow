@@ -58,7 +58,7 @@ jobs:
 
       - name: Bump minor version and update CHANGELOG
         run: |
-          BRANCH_NAME="main"  # Set this to your default branch name or the branch you always create tags on.
+          BRANCH_NAME="main" 
           
           # Fetch the branch
           git fetch origin $BRANCH_NAME
@@ -77,7 +77,8 @@ jobs:
           cargo build
           
           # Add new entry to CHANGELOG.md
-          echo -e "\n## [WIP]\n- Start of new work\n" >> CHANGELOG.md
+          NEW_CHANGELOG_ENTRY="## [WIP]\n- Start of new work\n"
+          sed -i "s/## \[$VERSION\]/&\n$NEW_CHANGELOG_ENTRY/" CHANGELOG.md
           
           # Commit and push changes
           git config user.name '${{ github.actor }}'
