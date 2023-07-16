@@ -79,5 +79,5 @@ jobs:
           git config --global user.email '${{ github.actor }}@users.noreply.github.com'
           git add .
           git commit -m "Bump version and update CHANGELOG"
-          git push
+          git push https://${{ secrets.GH_PAT }}:x-oauth-basic@github.com/${{ github.repository }}.git
 
