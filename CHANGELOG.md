@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.20.0
+## 0.22.0
 
 - abc
 - def
