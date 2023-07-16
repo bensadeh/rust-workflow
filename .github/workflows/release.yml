@@ -82,8 +82,10 @@ jobs:
           cargo build
           
           # Add new entry to CHANGELOG.md
-          NEW_CHANGELOG_ENTRY="## $BUMPED_VERSION\n\n- Start of new work"
-          sed -i "1s/^/$NEW_CHANGELOG_ENTRY\n\n/" CHANGELOG.md
+          NEW_CHANGELOG_ENTRY="## $BUMPED_VERSION\n\n"
+          sed -i "/^# Changelog/a\\
+          $NEW_CHANGELOG_ENTRY\\
+          " CHANGELOG.md
           
           # Commit and push changes
           git config user.name '${{ github.actor }}'
