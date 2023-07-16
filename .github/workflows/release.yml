@@ -44,6 +44,9 @@ jobs:
         run: |
           TAG_NAME=${{ github.ref_name }}
           RELEASE_NOTES=$(awk '/'"^## $TAG_NAME"'/{flag=1;next}/##/{flag=0}flag' CHANGELOG.md)
+          RELEASE_NOTES="${RELEASE_NOTES//'%'/'%25'}"
+          RELEASE_NOTES="${RELEASE_NOTES//$'\n'/'%0A'}"
+          RELEASE_NOTES="${RELEASE_NOTES//$'\r'/'%0D'}"
           echo "::set-output name=notes::$RELEASE_NOTES"
 
       - name: Create GitHub Release
@@ -54,6 +57,7 @@ jobs:
           tag: ${{ github.ref }}
           name: ${{ github.ref_name }}
           body: ${{ steps.release_notes.outputs.notes }}
+
 
       - name: Bump minor version and update CHANGELOG
         run: |
