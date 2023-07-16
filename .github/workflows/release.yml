@@ -57,8 +57,19 @@ jobs:
 
       - name: Bump minor version and update CHANGELOG
         run: |
+          # Find the commit SHA
+          COMMIT_SHA=$(echo $GITHUB_SHA)
+          
+          # Get the branch associated with the commit SHA
+          BRANCH_NAME=$(curl --silent --show-error --header 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/commits/${COMMIT_SHA}/branches-where-head" \
+            | jq -r '.branches[0].name')
+          
+          # Fetch the branch
+          git fetch origin $BRANCH_NAME
+          
           # Switch to the branch that triggered the workflow
-          git checkout "${GITHUB_REF#refs/heads/}"
+          git checkout "$BRANCH_NAME"
           
           # Bump minor version in Cargo.toml
           VERSION=$(grep "^version" ./Cargo.toml | head -1)
