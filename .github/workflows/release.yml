@@ -76,7 +76,7 @@ jobs:
           echo -e "\n## [WIP]\n- Start of new work\n" >> CHANGELOG.md
           
           # Configure Git to use PAT for authentication
-          git config url."https://x-access-token:${{ secrets.GH_PAT }}@github.com/".insteadOf "https://github.com/"
+          git config --global credential.helper store
           
           # Commit and push changes
           git config user.name '${{ github.actor }}'
@@ -84,4 +84,5 @@ jobs:
           git add .
           git commit -m "Bump version and update CHANGELOG"
           git push
+
 
