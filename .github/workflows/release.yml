@@ -43,7 +43,7 @@ jobs:
         id: release_notes
         run: |
           TAG_NAME=${{ github.ref_name }}
-          RELEASE_NOTES=$(sed -n "/## $TAG_NAME/,/## /p" CHANGELOG.md | tail -n +2 | perl -0pe 's/\n## /\n\n## /')
+          RELEASE_NOTES=$(sed -n "/## $TAG_NAME/,/## /p" CHANGELOG.md | perl -pe '$_ = "" if (1 .. 1)' | perl -0pe 's/\n## /\n\n## /')
           echo "::set-output name=notes::$RELEASE_NOTES"
 
       - name: Create GitHub Release
