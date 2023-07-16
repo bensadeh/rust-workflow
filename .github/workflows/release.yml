@@ -43,7 +43,7 @@ jobs:
         id: release_notes
         run: |
           TAG_NAME=${{ github.ref_name }}
-          RELEASE_NOTES=$(awk -v tag=$TAG_NAME '/## \[/{p=0} /## \['$tag'\]/{p=1} p' CHANGELOG.md)
+          RELEASE_NOTES=$(awk -v tag=$TAG_NAME '/## /{p=0} /^## '$tag'/{p=1} p' CHANGELOG.md)
           echo "RELEASE_NOTES=$RELEASE_NOTES" >> $GITHUB_ENV
 
       - name: Create GitHub Release
@@ -70,15 +70,16 @@ jobs:
           VERSION=$(echo $VERSION_LINE | grep -oP '\d+\.\d+\.\d+')
           MINOR_VERSION=$(echo $VERSION | awk -F'.' '{print $2}')
           BUMPED_MINOR_VERSION=$((MINOR_VERSION + 1))
-          BUMPED_VERSION_LINE=$(echo $VERSION_LINE | sed "s/\.$MINOR_VERSION\./\.$BUMPED_MINOR_VERSION\./")
+          BUMPED_VERSION=$(echo $VERSION | sed "s/\.$MINOR_VERSION\./\.$BUMPED_MINOR_VERSION\./")
+          BUMPED_VERSION_LINE=$(echo $VERSION_LINE | sed "s/$VERSION/$BUMPED_VERSION/")
           sed -i "s/$VERSION_LINE/$BUMPED_VERSION_LINE/" ./Cargo.toml
           
           # Update cargo.lock
           cargo build
           
           # Add new entry to CHANGELOG.md
-          NEW_CHANGELOG_ENTRY="## [WIP]\n- Start of new work\n"
-          sed -i "s/## \[$VERSION\]/&\n$NEW_CHANGELOG_ENTRY/" CHANGELOG.md
+          NEW_CHANGELOG_ENTRY="## $BUMPED_VERSION - \n- Start of new work\n"
+          sed -i "s/^## $VERSION -/&\n$NEW_CHANGELOG_ENTRY/" CHANGELOG.md
           
           # Commit and push changes
           git config user.name '${{ github.actor }}'
